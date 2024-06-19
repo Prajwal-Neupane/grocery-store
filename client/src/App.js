@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 
 import PrivateRoute from "./ProtectedRoute";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/" element={<Profile />} />
+          <Route path="/cart" element={<Cart />} />
         </Route>
       </Routes>
     </div>

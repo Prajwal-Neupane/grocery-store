@@ -5,13 +5,18 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState();
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
   const handleChange = (e) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,53 +24,63 @@ const Login = () => {
         "http://localhost:3001/api/user/login",
         data
       );
-      if (response.data) {
+      if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        // console.log(response.data.token);
         toast.success("User logged in");
         navigate("/");
+      } else {
+        toast.error("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      console.log(error.response.data.message);
-      toast.error(error.response.data.message);
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again later.");
     }
   };
+
   return (
-    <div className="items-center flex flex-col mt-9">
-      <h1 className="text-5xl font-bold text-white">Login</h1>
-      <form
-        className="w-full mt-9 flex items-center flex-col "
-        onSubmit={handleSubmit}
-      >
-        <input
-          onChange={handleChange}
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="p-5 w-[50%] bg-transparent border-b-2 outline-none text-white text-xl font-semibold"
-          autoComplete="off"
-          required
-        />{" "}
-        <br /> <br /> <br />
-        <input
-          name="password"
-          onChange={handleChange}
-          type="password"
-          placeholder="Password"
-          className="p-5 w-[50%] bg-transparent border-b-2 outline-none text-white text-xl"
-          required
-        />{" "}
-        <br />
-        <p className="mt-5 text-xl text-white">
-          Don't have an account?{" "}
-          <Link to={"/register"} className="text-[#FF0000] font-semibold">
-            Register
-          </Link>
-        </p>
-        <button className="px-4 py-4 w-[50%] mt-5 text-xl text-white bg-[#059212] hover:bg-[#06D001] transition-all duration-500 rounded-md">
-          Login
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-gray-800 text-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={data.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:bg-gray-600 focus:outline-none"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={data.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:bg-gray-600 focus:outline-none"
+              required
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-gray-400">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-blue-400 hover:underline">
+                Register
+              </Link>
+            </p>
+            <button
+              type="submit"
+              className="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
